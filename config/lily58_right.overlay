@@ -1,0 +1,31 @@
+/*
+ * Pantalla OLED genérica SSD1306 (I2C, 4 pines: VCC/GND/SDA/SCK-SCL)
+ * Lado DERECHO
+ *
+ * Si la pantalla sale a medias/cortada al probar, cambia height a <64>.
+ */
+
+&i2c0 {
+    status = "okay";
+
+    ssd1306: ssd1306@3c {
+        compatible = "solomon,ssd1306fb";
+        reg = <0x3c>;
+        width = <128>;
+        height = <32>;
+        segment-offset = <0>;
+        page-offset = <0>;
+        display-offset = <0>;
+        multiplex-ratio = <31>;
+        segment-remap;
+        com-invdir;
+        com-sequential;
+        prechargep = <0x22>;
+    };
+};
+
+/ {
+    chosen {
+        zephyr,display = &ssd1306;
+    };
+};
