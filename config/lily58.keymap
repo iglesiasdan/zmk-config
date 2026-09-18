@@ -12,18 +12,83 @@
 #define DEFAULT 0
 #define LOWER   1
 #define RAISE   2
+#define IDE     3
+#define EXTRA1  4
+#define EXTRA2  5
 
 / {
+    macros {
+        // Escribe "=>" (lambda de C#) de un solo toque.
+        // Posiciones físicas para distribución ISO española:
+        //   '=' = Shift+0        '>' = Shift+<  (tecla junto a Z)
+        lambda_arrow: lambda_arrow {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LS(N0) &kp LS(NON_US_BSLH)>;
+        };
+ 
+        // --- Atajos de doble combinación de Visual Studio ---
+        // Cada uno pulsa Ctrl+X, lo suelta, y pulsa Ctrl+Y, como haría tu mano.
+        vs_rename: vs_rename {
+            // Ctrl+R, Ctrl+R -> Renombrar símbolo
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_press &kp LCTRL>, <&macro_tap &kp R>, <&macro_release &kp LCTRL>,
+                        <&macro_press &kp LCTRL>, <&macro_tap &kp R>, <&macro_release &kp LCTRL>;
+        };
+ 
+        vs_extract_method: vs_extract_method {
+            // Ctrl+R, Ctrl+M -> Extraer método
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_press &kp LCTRL>, <&macro_tap &kp R>, <&macro_release &kp LCTRL>,
+                        <&macro_press &kp LCTRL>, <&macro_tap &kp M>, <&macro_release &kp LCTRL>;
+        };
+ 
+        vs_format_doc: vs_format_doc {
+            // Ctrl+K, Ctrl+D -> Formatear documento
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_press &kp LCTRL>, <&macro_tap &kp K>, <&macro_release &kp LCTRL>,
+                        <&macro_press &kp LCTRL>, <&macro_tap &kp D>, <&macro_release &kp LCTRL>;
+        };
+ 
+        vs_comment: vs_comment {
+            // Ctrl+K, Ctrl+C -> Comentar selección
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_press &kp LCTRL>, <&macro_tap &kp K>, <&macro_release &kp LCTRL>,
+                        <&macro_press &kp LCTRL>, <&macro_tap &kp C>, <&macro_release &kp LCTRL>;
+        };
+ 
+        vs_uncomment: vs_uncomment {
+            // Ctrl+K, Ctrl+U -> Descomentar selección
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_press &kp LCTRL>, <&macro_tap &kp K>, <&macro_release &kp LCTRL>,
+                        <&macro_press &kp LCTRL>, <&macro_tap &kp U>, <&macro_release &kp LCTRL>;
+        };
+    };
+ 
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+        // Mantén CODE + RAISE a la vez para entrar en la capa IDE
+        tri_layer {
+            if-layers = <LOWER RAISE>;
+            then-layer = <IDE>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
             display-name = "QWERTY";
             bindings = <
-&kp ESC    &kp N1  &kp N2  &kp N3    &kp N4   &kp N5                        &kp N6    &kp N7   &kp N8    &kp N9    &kp N0    &kp GRAVE
-&kp TAB    &kp Q   &kp W   &kp E     &kp R    &kp T                         &kp Y     &kp U    &kp I     &kp O     &kp P     &kp MINUS
-&kp LCTRL  &kp A   &kp S   &kp D     &kp F    &kp G                         &kp H     &kp J    &kp K     &kp L     &kp SEMI  &kp SQT
-&kp LSHFT  &kp Z   &kp X   &kp C     &kp V    &kp B   &kp LBKT     &kp RBKT &kp N     &kp M    &kp COMMA &kp DOT   &kp FSLH  &kp RSHFT
+&kp ESC    &kp N1  &kp N2  &kp N3    &kp N4   &kp N5                        &kp N6    &kp N7   &kp N8    &kp N9    &kp N0    &kp BSPC
+&kp TAB    &kp Q   &kp W   &kp E     &kp R    &kp T                         &kp Y     &kp U    &kp I     &kp O     &kp P     &kp GRAVE
+&kp LSHFT  &kp A   &kp S   &kp D     &kp F    &kp G                         &kp H     &kp J    &kp K     &kp L     &kp SEMI  &kp MINUS
+&kp LCTRL  &kp Z   &kp X   &kp C     &kp V    &kp B   &kp LBKT     &kp RBKT &kp N     &kp M    &kp COMMA &kp DOT   &kp FSLH  &kp SQT
                     &kp LALT  &kp LGUI  &mo LOWER  &kp SPACE       &kp RET  &mo RAISE  &kp BSPC  &kp RGUI
             >;
         };
@@ -34,7 +99,7 @@
              * C#/.NET: {}, (), [], <> y ; muy accesibles. */
             display-name = "CODE";
             bindings = <
-&studio_unlock &kp EXCL  &kp AT    &kp HASH  &kp DLLR  &kp PRCNT                    &kp CARET &kp AMPS  &kp ASTRK &kp LPAR  &kp RPAR  &kp UNDER
+&trans &kp EXCL  &kp AT    &kp HASH  &kp DLLR  &kp PRCNT                    &kp CARET &kp AMPS  &kp ASTRK &kp LPAR  &kp RPAR  &kp UNDER
 &trans         &trans    &trans    &trans    &trans    &trans                       &trans    &trans    &trans    &trans    &trans    &trans
 &trans         &kp UNDER &kp LPAR  &kp LBRC  &kp LBKT  &kp LT    &kp GT    &kp RBKT  &kp RBRC  &kp RPAR  &kp SEMI  &kp COLON
 &trans         &kp EQUAL &kp PLUS  &kp DQT   &kp SQT   &kp BSLH  &trans      &trans  &kp PIPE  &kp QMARK &kp GRAVE &kp TILDE &trans   &trans
@@ -45,12 +110,51 @@
         raise_layer {
             display-name = "RAISE";
             bindings = <
-&trans  &trans   &trans   &trans   &trans   &trans                        &trans   &trans   &trans   &trans   &trans   &trans
+&studio_unlock   &trans   &trans   &trans   &trans   &trans                        &trans   &trans   &trans   &trans   &trans   &trans
 &trans  &kp N1   &kp N2   &kp N3   &kp N4   &kp N5                        &kp N6   &kp N7   &kp N8   &kp N9   &kp N0   &trans
 &trans  &kp F1   &kp F2   &kp F3   &kp F4   &kp F5                        &kp LEFT &kp DOWN &kp UP   &kp RIGHT &trans  &trans
 &trans  &kp F6   &kp F7   &kp F8   &kp F9   &kp F10 &trans       &trans   &trans   &kp MINUS &kp EQUAL &kp LBKT &kp RBKT &kp BSLH
                   &trans   &trans   &trans   &trans           &trans   &trans   &trans   &trans
             >;
         };
+        ide_layer {
+            /* Capa de atajos de Visual Studio (Windows). Se activa sola
+             * manteniendo CODE + RAISE pulsados a la vez.
+             * Fila 1: navegación   Fila 2: build/debug
+             * Fila 3: refactor/edición (macros de doble combo)   Fila 4: archivo */
+            display-name = "IDE";
+            bindings = <
+&kp F12        &kp LC(F12)   &kp LA(F12)     &kp LS(F12)      &kp LC(MINUS)   &kp LC(LS(MINUS))              &kp LC(F)     &kp LC(LS(F))   &kp LC(H)  &kp LC(G)   &kp LC(T)     &trans
+&kp LC(LS(B))  &kp F5        &kp LC(F5)      &kp LS(F5)       &kp F9          &kp F10                        &kp F11       &kp LS(F11)     &kp LC(F10) &trans     &trans        &trans
+&trans         &kp LC(DOT)   &kp LC(SPACE)   &kp LC(LS(SPACE)) &vs_rename     &vs_extract_method  &vs_format_doc &vs_comment    &vs_uncomment  &kp LC(LS(N7)) &trans      &trans
+&trans         &kp LC(S)     &kp LC(LS(S))   &kp LC(Z)        &kp LC(Y)       &trans        &trans   &trans    &trans        &trans          &trans      &trans      &trans   &trans
+                             &trans          &trans           &trans          &trans                  &trans        &trans          &trans        &trans
+            >;
+        };
+ 
+        extra1_layer {
+            /* Capa libre reservada para uso futuro (sin asignar a ninguna tecla todavía). */
+            display-name = "EXTRA1";
+            bindings = <
+&trans  &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans
+            >;
+        };
+ 
+        extra2_layer {
+            /* Segunda capa libre reservada para uso futuro (sin asignar a ninguna tecla todavía). */
+            display-name = "EXTRA2";
+            bindings = <
+&trans  &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans
+            >;
+        };
+
     };
 };
