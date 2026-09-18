@@ -18,12 +18,13 @@
 
 / {
     macros {
-        // Escribe "=>" (lambda de C#) de un solo toque — usa las teclas
-        // ES_* del módulo zmk-locales, ya verificadas para español ISO.
+        // Escribe "=>" (lambda de C#) de un solo toque.
+        // Posiciones físicas para distribución ISO española:
+        //   '=' = Shift+0        '>' = Shift+<  (tecla junto a Z)
         lambda_arrow: lambda_arrow {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_tap &kp ES_EQUAL &kp ES_GT>;
+            bindings = <&macro_tap &kp LS(N0) &kp LS(NON_US_BSLH)>;
         };
  
         // --- Atajos de doble combinación de Visual Studio ---
@@ -125,7 +126,7 @@
             bindings = <
 &kp F12        &kp LC(F12)   &kp LA(F12)     &kp LS(F12)      &kp LC(MINUS)   &kp LC(LS(MINUS))              &kp LC(F)     &kp LC(LS(F))   &kp LC(H)  &kp LC(G)   &kp LC(T)     &trans
 &kp LC(LS(B))  &kp F5        &kp LC(F5)      &kp LS(F5)       &kp F9          &kp F10                        &kp F11       &kp LS(F11)     &kp LC(F10) &trans     &trans        &trans
-&trans         &kp LC(DOT)   &kp LC(SPACE)   &kp LC(LS(SPACE)) &vs_rename     &vs_extract_method  &vs_format_doc &vs_comment    &vs_uncomment  &kp LC(ES_SLASH) &trans      &trans
+&trans         &kp LC(DOT)   &kp LC(SPACE)   &kp LC(LS(SPACE)) &vs_rename     &vs_extract_method  &vs_format_doc &vs_comment    &vs_uncomment  &kp LC(LS(N7)) &trans      &trans
 &trans         &kp LC(S)     &kp LC(LS(S))   &kp LC(Z)        &kp LC(Y)       &trans        &trans   &trans    &trans        &trans          &trans      &trans      &trans   &trans
                              &trans          &trans           &trans          &trans                  &trans        &trans          &trans        &trans
             >;
